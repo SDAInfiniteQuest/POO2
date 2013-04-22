@@ -6,7 +6,7 @@ class FileNode extends File
 {
 	int nbDir=0;
 	FileNode daddy=null;
-	FileNode [] files=null;
+	FileNode[] files=null;
 	
 	public FileNode(FileNode dad, String son)
 	{
@@ -17,30 +17,37 @@ class FileNode extends File
 	public FileNode(String n)
 	{
 		super(n);			
-	}	
-
-	public String [] list()
-	{
-		return super.list();
 	}
 
-	public FileNode [] listfiles()
+	
+	/*
+	 * refus du constructeur vide WTF ?
+	public FileNode()
 	{
-		int i,j,sizeTab;
+	}
+  */
+
+	public FileNode[] listfiles()
+	{
+		int i,j,k=0,sizeTab;
 		FileNode cur;
-		String [] f=list();
-		if(!((files!=null)||(f=list())==null))	
+		String[] f=list();
+		
+		if(f!=null)
 		{
 			sizeTab=f.length;
 			files=new FileNode[sizeTab];
-			for(i=0,j=(sizeTab-1);i<=j;)
+
+			j=sizeTab-1;
+
+			for(i=0;i<sizeTab;i++)
 			{
 				cur=new FileNode(this,f[i]);
 				if(cur.isDirectory())
 				{
-					files[i]=cur;
+					files[k]=cur;
 					nbDir++;
-					i++;
+					k++;
 				}
 				else
 				{
@@ -51,7 +58,7 @@ class FileNode extends File
 		}
 		return files;
 	}
-
+/*
 	public void buildNode(int depth)
 	{
 		if(isFile()||depth<1) return  ;
@@ -59,7 +66,7 @@ class FileNode extends File
 		{
 			int i,j;
 			FileNode cur;
-			String [] f=super.list();
+			String [] f=list();
 			if(f==null) return ;
 			int sizeTab=f.length;
 			System.out.println(sizeTab);
@@ -89,6 +96,7 @@ class FileNode extends File
 			return ;
 		}
 	}
+*/
 
 	public void succ()
 	{
@@ -97,7 +105,7 @@ class FileNode extends File
 			int i;
 			for(i=0;i<files.length;i++)
 			{
-				System.out.println(files[i].getAbsolutePath() + "/" +	files[i].getName());
+				System.out.println(files[i].getAbsolutePath());
 			}
 		}
 	}
