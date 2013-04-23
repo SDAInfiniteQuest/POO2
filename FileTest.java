@@ -6,8 +6,7 @@ public class FileTest
 {
 	public static void main(String [] args)
 	{
-		FileTree f=new FileTree("/",2);
-		f.root.succ();
-//		f.print();
+		FileTree f=new FileTree("/users/info/il3/pallamidessi/SDA_2",3);
+		f.print();
 	}
 }

@@ -27,76 +27,48 @@ class FileNode extends File
 	}
   */
 
-	public FileNode[] listfiles()
+	/*marche parfaitement : par contre pas trop rapide prof de 3 sur 
+	 * / environ 10s*/
+
+	public void listfiles(int depth)
 	{
 		int i,j,k=0,sizeTab;
 		FileNode cur;
 		String[] f=list();
 		
-		if(f!=null)
+		if(isFile() || depth==0 )
 		{
-			sizeTab=f.length;
-			files=new FileNode[sizeTab];
-
-			j=sizeTab-1;
-
-			for(i=0;i<sizeTab;i++)
-			{
-				cur=new FileNode(this,f[i]);
-				if(cur.isDirectory())
-				{
-					files[k]=cur;
-					nbDir++;
-					k++;
-				}
-				else
-				{
-					files[j]=cur;
-					j--;
-				}
-			}
-		}
-		return files;
-	}
-/*
-	public void buildNode(int depth)
-	{
-		if(isFile()||depth<1) return  ;
-		else 
-		{
-			int i,j;
-			FileNode cur;
-			String [] f=list();
-			if(f==null) return ;
-			int sizeTab=f.length;
-			System.out.println(sizeTab);
-			for(i=0;i<f.length;i++)
-			{
-				//System.out.println(getAbsolutePath() + "/" + f[i]);
-			}
-			files=new FileNode[sizeTab];
-			for(i=0, j=(sizeTab-1);i<j;)
-			{
-				cur=new FileNode(this,f[i]);
-				System.out.println(cur.getName());
-				if(cur.isDirectory())
-				{
-					files[i]=cur;
-					files[i].buildNode(depth-1);
-					nbDir++;
-					i++;
-				}
-				else
-				{
-					files[j]=cur;
-					//System.out.println(files[j].getName());
-					j--;
-				}
-			}
 			return ;
 		}
+		else {
+			if(f!=null)
+			{
+				sizeTab=f.length;
+				files=new FileNode[sizeTab];
+
+				j=sizeTab-1;
+
+				for(i=0;i<sizeTab;i++)
+				{
+					cur=new FileNode(this,f[i]);
+					if(cur.isDirectory())
+					{
+						files[k]=cur;
+						cur.listfiles(depth-1);
+						nbDir++;
+						k++;
+					}
+					else
+					{
+						files[j]=cur;
+						j--;
+					}
+				}
+			}
+		}
+		return ;
 	}
-*/
+
 
 	public void succ()
 	{
@@ -110,45 +82,62 @@ class FileNode extends File
 		}
 	}
 
+	/* Affichage pas top,mais marche parfaitement*/
 	public void print()
 	{
 		int size,i,j;
-		if(!exists()) return ;
-		if(isFile()) System.out.println(getName()+"/");
-		else
+		int nb_element=0;
+
+		if(!exists()) 
+			return ;
+		
+		if(isFile()) 
+			System.out.println(getName());
+		else																// Cas dossier
 		{
-			System.out.print(getName()+"/");
+			System.out.println(getName()+"/");
 			size=getName().length();
+			
+			if(files==null) 									// Cas dossier vide
+				return;
+
 			for(i=0;i<files.length;i++)
 			{
-				if(i==0) 
-				{
-					if(files[i]!=null&&files[i].exists()) files[i].print();
-				}
-				else
-				{
-					for(j=0;j<size;j++)
-						System.out.print(" ");
-					if(files[i]!=null&&files[i].exists()) files[i].print();
-				}
+			
+				for(j=0;j<size+3;j++)
+					System.out.print(" ");
+				
+				if(files[i]!=null && files[i].isDirectory())
+					files[i].print();
+				
+				
+				if(files[i]!=null && files[i].isFile())
+					System.out.println(files[i].getName());
+				
 			}
 		}
 	}
 }
 
+
 public class FileTree
 {
-	static int MAX_DEPTH=5;
+	static int MAX_DEPTH=3;
 	int depth=0;
 	FileNode root;
 
 	public FileTree(String path, int dep)
 	{
-		depth=dep;
+		if (dep>MAX_DEPTH) 
+			depth=MAX_DEPTH;
+		else 
+			depth=dep;
+		
 		root=new FileNode(path);
+		
 		if(root.exists()&&root.isDirectory())
 		{
-			root.listfiles();
+			root.listfiles(depth);
 		}
 	}
 
