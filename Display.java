@@ -7,17 +7,60 @@ public class Display extends JPanel{
 	private Grid to_display;
 	private FileTree current;
 	private int taille;
+	private Vector<Edge> pendingToDraw;
+	private ClickableDisplay displayListener;
+
+	public Display(){
+		super();
+		pendingToDraw=new Vector<Edge>();
+	}
 
 	public Display(Grid g,FileTree f){
 		super();
 		to_display=g;
 		current=f;
+		pendingToDraw=new Vector<Edge>();
 	}
 
 	public void paint(Graphic g){
-		paint_aux(g,0,0,50,true,to_display)
+		int i;
+		paint_aux(g,0,0,50,true,to_display);
+
+		for (i = 0; i < pendingToDraw.size(); i++) {
+			Edge current=pendingToDraw.get(i);
+
+			drawEdge(g,current);
+		}
+
+	}
+	
+	public Vector<Edge> getEdgeVector(){
+		return pendingToDraw;	
 	}
 
+	public void addEdge(int x,int y,int edgeLength){
+		Edge toAdd=new Egde(x,y,edgeLength);
+		pendingToDraw.add(toAdd);
+	}
+
+	private void drawEdge(Graphics g,Edge e){
+		int x,y;
+		int edgeLength=e.getEdgelength();
+		int thickness=e.getThickness();
+
+		g.setColor(black);
+		Graphics2D g2=(Graphics2D) g;
+		g2.setStroke(new BasicStroke(thickness));
+
+		g.drawLine(x,y,x+edgeLength,y);
+		g.drawLine(x,y,x,y+edgeLength);
+		g.drawLine(x,y+edgeLength,x+edgeLength,y+edgeLength);
+		g.drawLine(x,y,x+edgeLength,y);
+
+	}
+	public void	setDisplayListener(ClickableDisplay c){
+		displayListener=c;
+	}
 	private void setFontSizeForDesiredlength(Graphics g,int length,String stringToRender){
 		boolean foundCorrectFontSize=false;
 		int i;
@@ -63,7 +106,8 @@ public class Display extends JPanel{
 				g.drawString(to_display.getCase().getName());
 				
 				Grid subDir=new Grid(to_display.getCase().getPointer);
-				
+				displayListener.updateGridList(subDir);
+
 				if (!subDir.isEmpty()){
 					int newSidelength=(sideLength*sideLength/subDir.listSize())
 					paint_aux(g,xOffset+5,yOffset+5,sideLength/,true,subDir);
@@ -71,5 +115,6 @@ public class Display extends JPanel{
 			}
 		}
 	}
+
 }
 
