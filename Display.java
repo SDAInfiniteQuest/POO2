@@ -42,6 +42,12 @@ public class Display extends JPanel{
 		Edge toAdd=new Egde(x,y,edgeLength);
 		pendingToDraw.add(toAdd);
 	}
+	
+	public void addMouseListener(MouseListener l){
+		super.addMouseListener(l);
+		displayListener=(ClickableDisplay)l;
+		displayListener.setAttachedDisplay(this);
+	}
 
 	private void drawEdge(Graphics g,Edge e){
 		int x,y;
