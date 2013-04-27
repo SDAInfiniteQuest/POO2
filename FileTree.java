@@ -18,7 +18,6 @@ class FileNode extends File
 	{
 		super(n);			
 	}
-
 	
 	/*
 	 * refus du constructeur vide WTF ?
@@ -30,7 +29,7 @@ class FileNode extends File
 	/*marche parfaitement : par contre pas trop rapide prof de 3 sur 
 	 * / environ 10s*/
 
-	public void listfiles(int depth)
+	public void buildTree(int depth)
 	{
 		int i,j,k=0,sizeTab;
 		FileNode cur;
@@ -40,7 +39,8 @@ class FileNode extends File
 		{
 			return ;
 		}
-		else {
+		else 
+		{
 			if(f!=null)
 			{
 				sizeTab=f.length;
@@ -54,7 +54,7 @@ class FileNode extends File
 					if(cur.isDirectory())
 					{
 						files[k]=cur;
-						cur.listfiles(depth-1);
+						cur.buildTree(depth-1);
 						nbDir++;
 						k++;
 					}
@@ -69,6 +69,10 @@ class FileNode extends File
 		return ;
 	}
 
+	public int nbFiles()
+	{
+		return files.length;
+	}
 
 	public void succ()
 	{
@@ -126,18 +130,26 @@ public class FileTree
 	int depth=0;
 	FileNode root;
 
-	public FileTree(String path, int dep)
+	public FileTree(String path, int dep,int option)
 	{
-		if (dep>MAX_DEPTH) 
+		if (dep>MAX_DEPTH || dep<0) 
 			depth=MAX_DEPTH;
 		else 
 			depth=dep;
-		
-		root=new FileNode(path);
-		
+
+		// illustre le fonctionnement des classes
+		switch(option)
+		{
+			case 0: root=new FileNode(path); break;
+			case 1: root=new FileSquare(path); break;
+			default:
+			{
+			}
+		}
+
 		if(root.exists()&&root.isDirectory())
 		{
-			root.listfiles(depth);
+			root.buildTree(depth);
 		}
 	}
 
@@ -150,4 +162,7 @@ public class FileTree
 	{
 		root.print();
 	}
+
+	// A faire : fonctions pour naviguer dans l'arbre (revenir au pere,
+	// descendre dans l'arbre etc)
 }
