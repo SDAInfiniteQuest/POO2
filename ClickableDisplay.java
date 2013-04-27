@@ -1,17 +1,15 @@
-import java.awt.event.MouseAdapter.*;
+import java.awt.event.*;
 
-class ClickableDisplay extends MouseAdapter{
+public class ClickableDisplay extends MouseAdapter{
 	
-	private LinkedList<Grid> gridList;
-	private Display attachedDisplay;
+	protected Display attachedDisplay;
 
 	public ClickableDisplay(){
 		super();
-		gridList=new LinkedList<Grid>;
 	}
 
 	boolean isCursorInSquare(int x,int y,int edgeLength,MouseEvent e){
-		int xMouse,int yMouse;
+		int xMouse,yMouse;
 		xMouse=e.getX();
 		yMouse=e.getY();
 
@@ -22,96 +20,61 @@ class ClickableDisplay extends MouseAdapter{
 	
 	}
 
-	Object getReferenceFromDisplay(int x,int y){
+	public FileNode getReferenceFromDisplay(MouseEvent e){
 			
-		int x,y;
+		FileTree t=attachedDisplay.getTree();
+		FileNode fd=t.getRoot();
+
+		return getReferenceFromDisplayAux(e,0,t.getDepth(),fd);
+	}
+
+	private FileNode getReferenceFromDisplayAux(MouseEvent e,int depth,int maxDepth,FileNode f){
+	
+		FileNode found;
 		int i;
-		Grid currentGrid;
-		boolean minIsCase=false;
-		Case minCase=null;
-		Case minGrid=null;
-		int minLenght;
 
-		x=e.getX();
-		y=e.getY();
-		
-		for (i = 0; i <gridList.size(); i++) {
-			currentGrid=gridList.get(i);
-			
-
-			if (isCursorInSquare(currentGrid.getX(),
-														currentGrid.getY(),
-														currentGrid.edgeLength,
-														x,y)){ 
-				
-				if (i==0){
-					minLenght=currentGrid.getEdgeLength();
-					minGrid=currentGrid;
-					minIsCase=false;
-				} 
-				else if(minLenght>currentGrid.getEdgeLength) {
-					minLenght=currentGrid.getEdgeLength();	
-					minGrid=currentGrid;
-					minIsCase=false;
-				}
-
-				for (j = 0; j < currentGrid.sizeList(); j++) {
-					currentCase=currentGrid.getCase(j);
-					
-					if (isCursorInSquare(currentCase.getX(),
-																currentCase.getY(),
-																currentCase.edgeLength,
-																x,y)){ 
-
-						//la case avec les cote les plus petit est forcement la 
-						//plus profonde dans l'arborecence
-						
-
-						if(minLenght>currentCase.getEdgeLength()) {
-							minLenght=currentCase.getEdgeLength();	
-							minCase=currentCase;
-							minIsCase=true;
-						}
-
+		if (isCursorInSquare(f.getX(),f.getY(),f.getEdgeSize(),e)){
+			if(maxDepth==depth)
+				return f;
+			else{
+				if(f.isDirectory()){
+					for (i = 0; i <f.nbFiles(); i++) {
+						if((found=getReferenceFromDisplayAux(e,depth+1,maxDepth,f.getSon(i)))!=null)
+							return found;
 					}
 				}
+				return f;
 			}
 		}
-	
-	if (minIsCase)
-		return (Object) minCase;
-	else if(!minIsCase && (minGrid!=null))
-		return (Object) minGrid;
-	else
 		return null;
 	}
 
 	public void mouseClicked(MouseEvent e){
-		Object toDetermined;
+		FileNode toDetermined;
 
 		if (e.getButton()==MouseEvent.BUTTON1){
-			toDetermined=getReferenceFromDisplay(e.getX(),e.getY());	
+			toDetermined=getReferenceFromDisplay(e);	
 			
 			if (toDetermined==null)
 				return;
-			else if(toDetermined.getClass().instanceof(Grid))
-
-			else if(toDetermined.getClass().instanceof(Case))
-				if(toDetermined.getClass().instanceof(CaseDirectory))
-
+			else{
+				if(toDetermined.isFile())
+					return;
+				else{
+				}
+			}
 		} 
 		else if (e.getButton()==MouseEvent.BUTTON2){
-			toDetermined=getReferenceFromDisplay(e.getX(),e.getY());		
+			toDetermined=getReferenceFromDisplay(e);
+
+			if (toDetermined==null)
+				return;
+			else{
+			}
 		} 
 	}
 
-	public void updateGridList(Grid g){
-		gridList.add(g);
-	}
 
-	public void setLinkedList(LinkedList<Grid> gl){
-		gridList=gl;
-	}
 
 	public void setAttachedDisplay(Display d){
 		attachedDisplay=d;
@@ -120,42 +83,37 @@ class ClickableDisplay extends MouseAdapter{
 	public void mouseMoved(MouseEvent e){
 		int x,y;
 		int i;
-		Grid currentGrid;
 
-		x=e.getX();
-		y=e.getY();
+		FileTree t=attachedDisplay.getTree();
+		FileNode fd=t.getRoot();
 		
 		attachedDisplay.getEdgeVector().removeAllElements();
 
-		for (i = 0; i <gridList.size(); i++) {
-			currentGrid=gridList.get(i);
-			
-			if (isCursorInSquare(currentGrid.getX(),
-														currentGrid.getY(),
-														currentGrid.edgeLength,
-														x,y)){ 
-
-				attachedDisplay.addEdge(currentGrid.getX(),
-																currentGrid.getY(),
-																currentGrid.edgeLength());
-				
-				for (j = 0; j < currentGrid.sizeList(); j++) {
-					currentCase=currentGrid.getCase(j);
-					
-					if (isCursorInSquare(currentCase.getX(),
-																currentCase.getY(),
-																currentCase.edgeLength,
-																x,y)){ 
-						attachedDisplay.addEdge(currentCase.getX(),
-																		currentCase.getY(),
-																		currentGrid.edgeLength());
-					}
-				}
-			}
-		}
+		mouseMovedAux(e,0,t.getDepth(),fd,attachedDisplay);	
 
 	}
 
+	private void mouseMovedAux(MouseEvent e,int depth,int maxDepth,FileNode f,Display d){
+		int i;
 
+		if (isCursorInSquare(f.getX(),f.getY(),f.getEdgeSize(),e)){
+			d.addEdge(f.getX(),
+								f.getY(),
+								f.getEdgeSize());
+			if(maxDepth==depth)
+				return ;
+			else{
+				if(f.isDirectory()){
+					for (i = 0; i <f.nbFiles(); i++) {
+						mouseMovedAux(e,depth+1,maxDepth,f.getSon(i),d);
+					}
+				}
+				return; 
+			}
+		}
+
+		return ;
+	}
+	
 }
 	

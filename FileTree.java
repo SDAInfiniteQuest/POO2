@@ -7,7 +7,9 @@ class FileNode extends File
 	int nbDir=0;
 	FileNode daddy=null;
 	FileNode[] files=null;
-	
+	protected int x,y;
+	protected int edgeSize;
+
 	public FileNode(FileNode dad, String son)
 	{
 		super(dad.getAbsolutePath(),son);
@@ -69,6 +71,10 @@ class FileNode extends File
 		return ;
 	}
 
+	public FileNode getSon(int index){
+		return files[index];
+	}
+
 	public int nbFiles()
 	{
 		return files.length;
@@ -121,6 +127,19 @@ class FileNode extends File
 			}
 		}
 	}
+	
+	public int getX(){
+		return x;
+	}
+
+	public int getY(){
+		return y;
+	}
+
+	public int getEdgeSize(){
+		return edgeSize;
+	}
+
 }
 
 
@@ -151,6 +170,14 @@ public class FileTree
 		{
 			root.buildTree(depth);
 		}
+	}
+	
+	public FileNode getRoot(){
+		return root;
+	}
+
+	public int getDepth(){
+		return depth;
 	}
 
 	public void setMaxDepth(int n)

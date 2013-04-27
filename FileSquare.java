@@ -1,15 +1,13 @@
 import java.lang.*;
 
-class FileSquare extends FileNode
+public class FileSquare extends FileNode
 {
 	// /!\ Variable static à la classe mais pouvant être définie ailleurs,
 	// je les ai juste mises la pour faire les tests sur la classe et
 	// pouvoir utiliser les constructeurs.
-	static int DEFAULT_X=0;
-	static int DEFAULT_Y=0;
-	static int DEFAULT_EDGE_SIZE=100;
-	int x,y;
-	int edgeSize;
+	private static int DEFAULT_X=0;
+	private static int DEFAULT_Y=0;
+	private static int DEFAULT_EDGE_SIZE=1000;
 
 	public FileSquare(int abs,int ord,int edge,FileNode dad,String son)
 	{
@@ -84,6 +82,10 @@ class FileSquare extends FileNode
 		}
 
 		return ;
+	}
+
+	public FileSquare getSon(int index){
+		return (FileSquare)super.getSon(index);
 	}
 
 	public void print()

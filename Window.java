@@ -1,18 +1,19 @@
-import java.swing.*
-import java.awt.*
+import javax.swing.*;
+import java.awt.*;
 
-public class Window extend JFrame{
-	private Grid g;
+public class Window extends JFrame{
+	private FileTree f;
 	private Display d;
-
+	
 	public Window(){
 		super();	
 	}
 
-	public void show(Grid to_display){
-		g=to_display;
+	public Window(FileTree f){
+		d=new Display(t);
+	}
 
-		d=new Display(to_display);
+	public void show(){
 		
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
