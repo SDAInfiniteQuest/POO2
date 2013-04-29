@@ -2,17 +2,17 @@ import java.lang.*;
 import java.io.File;
 import java.io.IOException;
 
-public class FileTest 
+public class TestAffichage 
 {
 	public static void main(String [] args)
 	{
 		FileTree f=new FileTree("/usr",2,1);
-		Window w=new Windows(f);
+		WindowProjet w=new WindowProjet(f);
 		
-		w.show();
+
+		w.afficher();
 		w.pack();
-		w.setVisisble(true);
-		
+		w.setVisible(true);
 		
 	}
 }

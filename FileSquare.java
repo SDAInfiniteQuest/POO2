@@ -57,10 +57,10 @@ public class FileSquare extends FileNode
 					abs=x+i*curEdge;
 					for(j=0;j<nbEdges;j++)
 					{
-						ord=y+l*curEdge;
+						ord=y+j*curEdge;
 						if(i*nbEdges+j<nbFile)
 						{
-							cur=new FileSquare(x,y,curEdge,this,f[i*nbEdges+j]);
+							cur=new FileSquare(abs+2,ord+2,curEdge-2,this,f[i*nbEdges+j]);
 							if(cur.isDirectory())
 							{
 								files[k]=cur;
@@ -70,7 +70,7 @@ public class FileSquare extends FileNode
 							}
 							else
 							{
-								files[j]=cur;
+								files[l]=cur;
 								l--;
 							}
 						}

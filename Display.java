@@ -26,16 +26,14 @@ public class Display extends JPanel{
 		int i;
 		FileNode f=current.getRoot();
 
-		paint_aux(g,f,true);
+		paint_aux(g,f,false,new Color(66,227,227),new Color(227,66,66));
 
 		for (i = 0; i < pendingToDraw.size(); i++) {
 			Edge current=pendingToDraw.get(i);
-
 			drawEdge(g,current);
 		}
 
 	}
-	
 	public Vector<Edge> getEdgeVector(){
 		return pendingToDraw;	
 	}
@@ -49,10 +47,14 @@ public class Display extends JPanel{
 		displayListener=(ClickableDisplay)l;
 		displayListener.setAttachedDisplay(this);
 	}
+	
+	public void setTreeFile(FileTree f){
+		current=f;	
+	}
 
 	private void drawEdge(Graphics g,Edge e){
-		int x=getX();
-		int y=getY();
+		int x=e.getX();
+		int y=e.getY();
 		int edgeLength=e.getEdgeLength();
 		int thickness=e.getThickness();
 
@@ -63,7 +65,7 @@ public class Display extends JPanel{
 		g.drawLine(x,y,x+edgeLength,y);
 		g.drawLine(x,y,x,y+edgeLength);
 		g.drawLine(x,y+edgeLength,x+edgeLength,y+edgeLength);
-		g.drawLine(x,y,x+edgeLength,y);
+		g.drawLine(x+edgeLength,y,x+edgeLength,y+edgeLength);
 
 	}
 	public void	setDisplayListener(ClickableDisplay c){
@@ -88,7 +90,7 @@ public class Display extends JPanel{
 
 	}
 
-	public void paint_aux(Graphics g,FileNode f,boolean isInit){
+	public void paint_aux(Graphics g,FileNode f,boolean isInit,Color colorFile,Color colorDirectory){
 		int i,j;	
 		
 		/* Premier passage,variable d'environnement*/
@@ -97,23 +99,34 @@ public class Display extends JPanel{
 		}
 
 		if(f.isFile()){
-			g.setColor(Color.blue);
+			g.setColor(colorFile);
 			g.fillRect(f.getX(),f.getY(),f.getEdgeSize(),f.getEdgeSize());
+			
 
 			setFontSizeForDesiredlength(g,f.getEdgeSize(),f.getName());
-			g.setColor(Color.black);
-			g.drawString(f.getName(),f.getX(),f.getY());
+			
+			if(g.getFont().getSize()>9){
+				g.setColor(Color.black);
+				g.drawString(f.getName(),f.getX(),f.getY()+f.getEdgeSize());
+			}
+			return;
 		}
 		else if(f.isDirectory()){
-			g.setColor(Color.red);
+			g.setColor(colorDirectory);
 			g.fillRect(f.getX(),f.getY(),f.getEdgeSize(),f.getEdgeSize());
 			
 			setFontSizeForDesiredlength(g,f.getEdgeSize(),f.getName());
-			g.setColor(Color.black);
-			g.drawString(f.getName(),f.getX(),f.getY());
+			
+			if(g.getFont().getSize()>9){
+				g.setColor(Color.black);
+				g.drawString(f.getName(),f.getX(),f.getY()+f.getEdgeSize());
+			}
+			
+			if(f.getFiles()==null)
+				return;
 
 			for (i = 0; i <f.nbFiles(); i++) {
-				paint_aux(g,f.getSon(i),true);
+				paint_aux(g,f.getSon(i),true,colorFile.darker(),colorDirectory.darker());
 			}
 		}
 	}

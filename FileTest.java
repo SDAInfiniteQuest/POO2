@@ -8,5 +8,6 @@ public class FileTest
 	{
 		FileTree f=new FileTree("/usr",2,1);
 		f.print();
+
 	}
 }

@@ -13,10 +13,10 @@ public class ClickableDisplay extends MouseAdapter{
 		xMouse=e.getX();
 		yMouse=e.getY();
 
-		return ((x+edgeLength<xMouse
-						&& x>xMouse)
-						&& (y+edgeLength<yMouse 
-						&& y>yMouse));
+		return ((x+edgeLength>xMouse
+						&& x<xMouse)
+						&& (y+edgeLength>yMouse 
+						&& y<yMouse));
 	
 	}
 
@@ -37,7 +37,7 @@ public class ClickableDisplay extends MouseAdapter{
 			if(maxDepth==depth)
 				return f;
 			else{
-				if(f.isDirectory()){
+				if(f.isDirectory() && !f.isEmpty()){
 					for (i = 0; i <f.nbFiles(); i++) {
 						if((found=getReferenceFromDisplayAux(e,depth+1,maxDepth,f.getSon(i)))!=null)
 							return found;
@@ -60,16 +60,23 @@ public class ClickableDisplay extends MouseAdapter{
 			else{
 				if(toDetermined.isFile())
 					return;
-				else{
+				else if(toDetermined.isDirectory() ){
+					attachedDisplay.getEdgeVector().removeAllElements();
+					attachedDisplay.setTreeFile(new FileTree(toDetermined.getAbsolutePath(),2,1) );
+					attachedDisplay.repaint();
 				}
 			}
 		} 
-		else if (e.getButton()==MouseEvent.BUTTON2){
-			toDetermined=getReferenceFromDisplay(e);
+		else if (e.getButton()==MouseEvent.BUTTON3){
 
-			if (toDetermined==null)
+			String parent=attachedDisplay.getTree().getRoot().getParent();
+			
+			if(parent==null)
 				return;
 			else{
+				attachedDisplay.getEdgeVector().removeAllElements();
+				attachedDisplay.setTreeFile(new FileTree(parent,2,1) );
+				attachedDisplay.repaint();
 			}
 		} 
 	}
@@ -84,12 +91,14 @@ public class ClickableDisplay extends MouseAdapter{
 		int x,y;
 		int i;
 
+
 		FileTree t=attachedDisplay.getTree();
 		FileNode fd=t.getRoot();
 		
 		attachedDisplay.getEdgeVector().removeAllElements();
 
-		mouseMovedAux(e,0,t.getDepth(),fd,attachedDisplay);	
+		mouseMovedAux(e,0,t.getDepth(),fd,attachedDisplay);
+		attachedDisplay.repaint();
 
 	}
 
@@ -103,7 +112,7 @@ public class ClickableDisplay extends MouseAdapter{
 			if(maxDepth==depth)
 				return ;
 			else{
-				if(f.isDirectory()){
+				if(f.isDirectory() && !f.isEmpty()){
 					for (i = 0; i <f.nbFiles(); i++) {
 						mouseMovedAux(e,depth+1,maxDepth,f.getSon(i),d);
 					}
