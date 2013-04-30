@@ -20,13 +20,13 @@ public class WindowProjet extends JFrame{
 		JPanel screen=new JPanel();
 
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		Dimension size=new Dimension((int)
-		Toolkit.getDefaultToolkit().getScreenSize().getWidth(),(int)Toolkit.getDefaultToolkit().getScreenSize().getHeight()-70);
+		Dimension size=new Dimension((int)((int) Toolkit.getDefaultToolkit().getScreenSize().getWidth()*0.65),((int)Toolkit.getDefaultToolkit().getScreenSize().getHeight()-100));
 		c=new ClickableDisplay();
 		c.setAttachedDisplay(d);
-		d.addMouseListener(c);
+		d.addMouseListenerForClickable(c);
 		d.addMouseMotionListener(c);
-		
+		d.setToolTipText("first");
+		c.setActivateToolTip(true);
 		screen.setPreferredSize(size);
 		screen.setMinimumSize(size);
 		screen.setMaximumSize(size);

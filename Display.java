@@ -11,14 +11,14 @@ public class Display extends JPanel{
 	private int taille;
 	private Vector<Edge> pendingToDraw;
 	private ClickableDisplay displayListener;
-	private JPanel control;
+	private ControlPanel control;
 
 	public Display(){
 		super();
 		setLayout(new FlowLayout());
 		pendingToDraw=new Vector<Edge>();
 		setLayout(new BorderLayout());
-		control=new JPanel();
+		control=new ControlPanel();
 	}
 
 	public Display(FileTree f){
@@ -27,8 +27,8 @@ public class Display extends JPanel{
 		current=f;
 		pendingToDraw=new Vector<Edge>();
 		setLayout(new BorderLayout());
-		control=new JPanel();
-		control.add(new JLabel(current.getRoot().getAbsolutePath()));
+		control=new ControlPanel();
+		control.updateDirInfo(f.getRoot().getAbsolutePath(),(int) f.getRoot().length(),f.getRoot().getNbFile(),f.getRoot().getNbDirectory());
 	}
 	
 	public void setDisplayPanelSize(Dimension d){
@@ -44,7 +44,7 @@ public class Display extends JPanel{
 		setMaximumSize(dimensionExplorer);
 	}
 	
-	public JPanel getControlPanel(){
+	public ControlPanel getControlPanel(){
 		return control;
 	}
 
@@ -52,7 +52,7 @@ public class Display extends JPanel{
 		int i;
 		FileNode f=current.getRoot();
 
-		paint_aux(g,f,false,new Color(66,227,227),new Color(227,66,66));
+		paint_aux(g,f,false,new Color(66,227,227),new Color(227,66,66),0,current.getDepth());
 
 		for (i = 0; i < pendingToDraw.size(); i++) {
 			Edge current=pendingToDraw.get(i);
@@ -67,14 +67,23 @@ public class Display extends JPanel{
 	public void addEdge(int x,int y,int edgeLength){
 		pendingToDraw.add(new Edge(x,y,edgeLength));
 	}
-	
-	public void addMouseListener(MouseListener l){
+
+	//J'ai du mettre un autre nom car le gestionnaire de tooltips utilise aussi
+	//addMouselisterner et ca faisait des chocapic, car il essaye de caster un
+	//mouselistener en Clickable
+	public void addMouseListenerForClickable(MouseListener l){
 		super.addMouseListener(l);
 		displayListener=(ClickableDisplay)l;
 		displayListener.setAttachedDisplay(this);
 	}
 	
 	public void setTreeFile(FileTree f){
+		if(f.getRoot().isEmpty())
+			control.updateDirInfo(f.getRoot().getAbsolutePath(),(int) f.getRoot().length(),0,0);
+		else
+			control.updateDirInfo(f.getRoot().getAbsolutePath(),(int) f.getRoot().length(),f.getRoot().getNbFile(),f.getRoot().getNbDirectory());
+		
+		control.flushFileInfo();	
 		current=f;	
 	}
 
@@ -116,7 +125,7 @@ public class Display extends JPanel{
 
 	}
 
-	public void paint_aux(Graphics g,FileNode f,boolean isInit,Color colorFile,Color colorDirectory){
+	public void paint_aux(Graphics g,FileNode f,boolean isInit,Color colorFile,Color colorDirectory,int depth,int depthMax){
 		int i,j;	
 		
 		/* Premier passage,variable d'environnement*/
@@ -128,7 +137,6 @@ public class Display extends JPanel{
 			g.setColor(colorFile);
 			g.fillRect(f.getX(),f.getY(),f.getEdgeSize(),f.getEdgeSize());
 			
-
 			setFontSizeForDesiredlength(g,f.getEdgeSize(),f.getName());
 			
 			if(g.getFont().getSize()>9){
@@ -141,18 +149,19 @@ public class Display extends JPanel{
 			g.setColor(colorDirectory);
 			g.fillRect(f.getX(),f.getY(),f.getEdgeSize(),f.getEdgeSize());
 			
-			setFontSizeForDesiredlength(g,f.getEdgeSize(),f.getName());
-			
-			if(g.getFont().getSize()>9){
-				g.setColor(Color.black);
-				g.drawString(f.getName(),f.getX(),f.getY()+f.getEdgeSize());
+			if(depthMax==depth || f.isEmpty()){
+				setFontSizeForDesiredlength(g,f.getEdgeSize(),f.getName());
+				
+				if(g.getFont().getSize()>9){
+					g.setColor(Color.black);
+					g.drawString(f.getName(),f.getX(),f.getY()+f.getEdgeSize());
+				}
 			}
-			
+
 			if(f.getFiles()==null)
 				return;
-
 			for (i = 0; i <f.nbFiles(); i++) {
-				paint_aux(g,f.getSon(i),true,colorFile.darker(),colorDirectory.darker());
+				paint_aux(g,f.getSon(i),true,colorFile.darker(),colorDirectory.darker(),depth+1,depthMax);
 			}
 		}
 	}

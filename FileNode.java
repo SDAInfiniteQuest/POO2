@@ -87,6 +87,26 @@ public class FileNode extends File
 	{
 		return files.length;
 	}
+	
+	public int getNbFile(){
+		int result=0,i;
+
+		for(i=0;i<files.length;i++){
+			if(files[i].isFile())
+				result++;
+		}
+		return result;
+	}
+
+	public int getNbDirectory(){
+		int result=0,i;
+
+		for(i=0;i<files.length;i++){
+			if(files[i].isDirectory())
+				result++;
+		}
+		return result;
+	}
 
 	public void succ()
 	{
