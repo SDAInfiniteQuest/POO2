@@ -1,6 +1,7 @@
 import java.lang.*;
 import java.io.File;
 import java.io.IOException;
+import java.awt.Toolkit;
 
 public class FileTree
 {
@@ -18,8 +19,13 @@ public class FileTree
 		// illustre le fonctionnement des classes
 		switch(option)
 		{
-			case 0: root=new FileNode(path); break;
-			case 1: root=new FileSquare(path); break;
+			case 0: 
+				root=new FileNode(path); 
+				break;
+			case 1: 
+				root=new FileSquare(path);
+				((FileSquare) root).setDefaultEdgeSize((int) Toolkit.getDefaultToolkit().getScreenSize().getHeight()-70);
+				break;
 			default:
 			{
 			}

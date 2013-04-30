@@ -4,22 +4,48 @@ import java.awt.*;
 import java.util.*;
 import java.awt.event.*;
 import java.awt.FontMetrics.*;
+import java.awt.Toolkit;
 
 public class Display extends JPanel{
 	private FileTree current;
 	private int taille;
 	private Vector<Edge> pendingToDraw;
 	private ClickableDisplay displayListener;
+	private JPanel control;
 
 	public Display(){
 		super();
+		setLayout(new FlowLayout());
 		pendingToDraw=new Vector<Edge>();
+		setLayout(new BorderLayout());
+		control=new JPanel();
 	}
 
 	public Display(FileTree f){
 		super();
+		setLayout(new FlowLayout());
 		current=f;
 		pendingToDraw=new Vector<Edge>();
+		setLayout(new BorderLayout());
+		control=new JPanel();
+		control.add(new JLabel(current.getRoot().getAbsolutePath()));
+	}
+	
+	public void setDisplayPanelSize(Dimension d){
+		Dimension dimensionExplorer=new Dimension((int)d.getHeight(),(int)d.getHeight());
+		Dimension dimensionControl=new Dimension((int)d.getWidth()-(int)d.getHeight(),(int)d.getHeight());
+
+		control.setPreferredSize(dimensionControl);
+		control.setMinimumSize(dimensionControl);
+		control.setMaximumSize(dimensionControl);
+
+		setPreferredSize(dimensionExplorer);
+		setMinimumSize(dimensionExplorer);
+		setMaximumSize(dimensionExplorer);
+	}
+	
+	public JPanel getControlPanel(){
+		return control;
 	}
 
 	public void paint(Graphics g){

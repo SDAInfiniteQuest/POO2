@@ -35,6 +35,7 @@ public class FileSquare extends FileNode
 		int nbFile,nbEdges;
 		int curEdge;
 		FileNode cur;
+
 		String[] f=list();
 
 		if(isFile() || depth==0 || f==null) return ;
@@ -86,6 +87,11 @@ public class FileSquare extends FileNode
 
 	public FileSquare getSon(int index){
 		return (FileSquare)super.getSon(index);
+	}
+	
+	public void setDefaultEdgeSize(int newSize){
+		DEFAULT_EDGE_SIZE=newSize;
+		edgeSize=DEFAULT_EDGE_SIZE;
 	}
 
 	public void print()
