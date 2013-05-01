@@ -2,13 +2,27 @@ import java.lang.*;
 
 public class FileSquare extends FileNode
 {
-	// /!\ Variable static à la classe mais pouvant être définie ailleurs,
+	// /!\ Variables static à la classe mais pouvant être définies ailleurs,
 	// je les ai juste mises la pour faire les tests sur la classe et
 	// pouvoir utiliser les constructeurs.
 	private static int DEFAULT_X=0;
 	private static int DEFAULT_Y=0;
+	private static int SEUIL=2;
 	private static int DEFAULT_EDGE_SIZE=1000;
 
+	/**
+	 * Constructeur: Crée une instance de FileSquare, utilisable surtout pour la récursion
+	 * @param abs
+	 *		définit la donnée en abscisse
+	 * @param ord
+	 *		définit la donnée en ordonnée
+	 * @param edge
+	 *		définit la taille du coté
+	 * @param dad
+	 *		référence vers le père
+	 * @param son
+	 *		nom du fichier courant
+	 */
 	public FileSquare(int abs,int ord,int edge,FileNode dad,String son)
 	{
 		super(dad,son);
@@ -17,6 +31,11 @@ public class FileSquare extends FileNode
 		edgeSize=edge;
 	}
 
+	/**
+	 * Constructeur: Crée une instance de FileSquare utilisable avant la récursion
+	 * @param son
+	 *		nom du fichier courant
+	 */
 	public FileSquare(String n)
 	{
 		super(n);
@@ -25,8 +44,11 @@ public class FileSquare extends FileNode
 		edgeSize=DEFAULT_EDGE_SIZE;
 	}
 
-	// La fonction a l'air de marcher mais je sais pas si les coordonnées
-	// sont utilisables (i.e bien calculées) donc il reste ca a vérifier 
+	/**
+	 * Construit l'arbre des fichiers en indiquant les valeurs des positions des carrés
+	 * @param depth
+	 * 		Indique la profondeur de l'arbre souhaitée
+	 */
 	public void buildTree(int depth)
 	{
 		int i,j;
@@ -47,7 +69,7 @@ public class FileSquare extends FileNode
 			// /!\J'ai mis 1 ici mais la valeur reste à définir, c'est une
 			// valeur seuil pour l'affichage et j'ai hésité à la définir dans
 			// la classe FilesSquare
-			if(nbEdges>0 && (curEdge=edgeSize/nbEdges)>1) 
+			if(nbEdges>0 && (curEdge=edgeSize/nbEdges)>SEUIL) // si erreur remplacer seuil par 1 
 			{
 				files=new FileSquare[nbFile];
 				k=0;
@@ -85,15 +107,32 @@ public class FileSquare extends FileNode
 		return ;
 	}
 
-	public FileSquare getSon(int index){
+	/**
+	 * Trouve le noeud à partir de son indice dans la liste des fichiers du répertoire courant
+	 * @param index
+	 * 		indice du noeud recherché
+	 * @return
+	 *		FileSquare renvoit le FileSquare associé au noeud
+	 */
+	public FileSquare getSon(int index)
+	{
 		return (FileSquare)super.getSon(index);
 	}
 	
-	public void setDefaultEdgeSize(int newSize){
+	/**
+	 * Rédéfinit la valeur de DEFAULT_EDGE_SIZE
+	 * @param newsize
+	 * 		Nouvelle valeur pour DEFAULT_EDGE_SIZE
+	 */
+	public void setDefaultEdgeSize(int newSize)
+	{
 		DEFAULT_EDGE_SIZE=newSize;
 		edgeSize=DEFAULT_EDGE_SIZE;
 	}
 
+	/**
+	 * Affiche récursivement l'arbre des fichiers sur la sortie standard
+	 */
 	public void print()
 	{
 		super.print();
