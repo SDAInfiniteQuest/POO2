@@ -99,16 +99,16 @@ public class ControlPanel extends JPanel{
 		//directory.add(padding);
 		directory.add(addTitledBorder(currentPath,"Path du repertoire courant"));
 		directory.add(addTitledBorder(nbElem,"Nombre total d'element"));
-		directory.add(addTitledBorder(nbFiles,"Nombre de fichier "));
+		directory.add(addTitledBorder(nbFiles,"Nombre de fichier"));
 		directory.add(addTitledBorder(nbDirectory,"Nombre de dossier"));
 		directory.add(addTitledBorder(goTo,"Afficher le repertoire de path suivant :"));
 		
 		file.add(addTitledBorder(filename,"Nom du fichier selectionne"));
-		file.add(addTitledBorder(getFilePath,"Path du fichier selectionner"));
+		file.add(addTitledBorder(getFilePath,"Path du fichier selectionne"));
 		file.add(addTitledBorder(sizeOnDiskFile,"Taille du fichier selectionne en octets"));
 		
 		recursion.add(addTitledBorder(currentDepth,"Niveau de recursion actuel"));
-		recursion.add(addTitledBorder(newDepth,"Nouveaux niveau de recusion"));
+		recursion.add(addTitledBorder(newDepth,"Nouveaux niveaux de recursion"));
 		getFilePath.setEditable(false);
 		currentPath.setEditable(false);
 	
