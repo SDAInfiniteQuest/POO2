@@ -142,7 +142,17 @@ public class ControlPanel extends JPanel{
 		newDepth.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e ){
 				try{
-					attachedDisplay.setDepthLevel( Integer.parseInt(newDepth.getText()) );	
+
+					try{
+						attachedDisplay.setDepthLevel( Integer.parseInt(newDepth.getText()) );	
+					}
+					catch(Exception ex2){
+						attachedDisplay.setDepthLevel(2);
+					}
+					
+					if(attachedDisplay.getDepthLevel()==0)
+						attachedDisplay.setDepthLevel(2);	
+
 					attachedDisplay.setTreeFile(new FileTree(attachedDisplay.getTree().getRoot().getAbsolutePath(),attachedDisplay.getDepthLevel(),1));
 					attachedDisplay.repaint();
 				}
