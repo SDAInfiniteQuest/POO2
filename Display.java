@@ -12,6 +12,7 @@ public class Display extends JPanel{
 	private Vector<Edge> pendingToDraw;
 	private ClickableDisplay displayListener;
 	private ControlPanel control;
+	private int depthLevel=2;
 
 	public Display(){
 		super();
@@ -19,6 +20,7 @@ public class Display extends JPanel{
 		pendingToDraw=new Vector<Edge>();
 		setLayout(new BorderLayout());
 		control=new ControlPanel();
+		control.setAttachedElement(this);
 	}
 
 	public Display(FileTree f){
@@ -28,6 +30,7 @@ public class Display extends JPanel{
 		pendingToDraw=new Vector<Edge>();
 		setLayout(new BorderLayout());
 		control=new ControlPanel();
+		control.setAttachedElement(this);
 		control.updateDirInfo(f.getRoot().getAbsolutePath(),(int) f.getRoot().length(),f.getRoot().getNbFile(),f.getRoot().getNbDirectory());
 	}
 	
@@ -52,7 +55,7 @@ public class Display extends JPanel{
 		int i;
 		FileNode f=current.getRoot();
 
-		paint_aux(g,f,false,new Color(66,227,227),new Color(227,66,66),0,current.getDepth());
+		paint_aux(g,f,false,new Color(66,227,227),new Color(227,66,66),new Color(147,227,66),0,current.getDepth());
 
 		for (i = 0; i < pendingToDraw.size(); i++) {
 			Edge current=pendingToDraw.get(i);
@@ -83,8 +86,10 @@ public class Display extends JPanel{
 		else
 			control.updateDirInfo(f.getRoot().getAbsolutePath(),(int) f.getRoot().length(),f.getRoot().getNbFile(),f.getRoot().getNbDirectory());
 		
+		control.updateRecInfo(f.getDepth());
 		control.flushFileInfo();	
-		current=f;	
+		current=f;
+		pendingToDraw.removeAllElements();	
 	}
 
 	private void drawEdge(Graphics g,Edge e){
@@ -125,7 +130,7 @@ public class Display extends JPanel{
 
 	}
 
-	public void paint_aux(Graphics g,FileNode f,boolean isInit,Color colorFile,Color colorDirectory,int depth,int depthMax){
+	public void paint_aux(Graphics g,FileNode f,boolean isInit,Color colorFile,Color colorDirectory,Color colorSpecialFile,int depth,int depthMax){
 		int i,j;	
 		
 		/* Premier passage,variable d'environnement*/
@@ -137,11 +142,11 @@ public class Display extends JPanel{
 			g.setColor(colorFile);
 			g.fillRect(f.getX(),f.getY(),f.getEdgeSize(),f.getEdgeSize());
 			
-			setFontSizeForDesiredlength(g,f.getEdgeSize(),f.getName());
+			setFontSizeForDesiredlength(g,f.getEdgeSize()-3,f.getName());
 			
 			if(g.getFont().getSize()>9){
 				g.setColor(Color.black);
-				g.drawString(f.getName(),f.getX(),f.getY()+f.getEdgeSize());
+				g.drawString(f.getName(),f.getX(),f.getY()+f.getEdgeSize()-3);
 			}
 			return;
 		}
@@ -150,19 +155,33 @@ public class Display extends JPanel{
 			g.fillRect(f.getX(),f.getY(),f.getEdgeSize(),f.getEdgeSize());
 			
 			if(depthMax==depth || f.isEmpty()){
-				setFontSizeForDesiredlength(g,f.getEdgeSize(),f.getName());
+				setFontSizeForDesiredlength(g,f.getEdgeSize()-3,f.getName());
 				
 				if(g.getFont().getSize()>9){
 					g.setColor(Color.black);
-					g.drawString(f.getName(),f.getX(),f.getY()+f.getEdgeSize());
+					g.drawString(f.getName(),f.getX(),f.getY()+f.getEdgeSize()-3);
 				}
 			}
 
 			if(f.getFiles()==null)
 				return;
 			for (i = 0; i <f.nbFiles(); i++) {
-				paint_aux(g,f.getSon(i),true,colorFile.darker(),colorDirectory.darker(),depth+1,depthMax);
+				paint_aux(g,f.getSon(i),true,colorFile.darker(),colorDirectory.darker(),colorSpecialFile.darker(),depth+1,depthMax);
 			}
+		}
+		/* Character device,named pipe,block Device, Local Domain socket, etc ..*/
+		else{
+			
+			g.setColor(colorSpecialFile);
+			g.fillRect(f.getX(),f.getY(),f.getEdgeSize(),f.getEdgeSize());
+
+			setFontSizeForDesiredlength(g,f.getEdgeSize()-3,f.getName());
+			
+			if(g.getFont().getSize()>9){
+				g.setColor(Color.black);
+				g.drawString(f.getName(),f.getX(),f.getY()+f.getEdgeSize()-3);
+			}
+			
 		}
 	}
 
@@ -170,5 +189,12 @@ public class Display extends JPanel{
 		return current;
 	}
 
+	public void setDepthLevel(int d){
+		depthLevel=d;
+	}
+
+	public int getDepthLevel(){
+		return depthLevel;
+	}
 		
 	}

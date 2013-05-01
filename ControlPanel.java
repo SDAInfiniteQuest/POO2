@@ -2,47 +2,64 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JComponent;
 import javax.swing.JTextArea;
+import javax.swing.JTextField;
 import javax.swing.BorderFactory;
 import javax.swing.border.*;
 import java.awt.GridLayout;
+import java.awt.FlowLayout;
+import javax.swing.BoxLayout;
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.event.*;
+import java.io.File;
 
 public class ControlPanel extends JPanel{
+	private Display attachedDisplay;
+
 	private JPanel file;
 	private JPanel directory;
-	private JPanel recursionControl;
+	private JPanel recursion;
 
-	private JLabel currentPath;
-	private JTextArea goTo;
+	private JTextField currentPath;
+	private JTextField goTo;
 	private JLabel sizeOnDiskDir;
 	private JLabel nbElem;
 	private JLabel nbFiles,nbDirectory;
 	
 	private JLabel sizeOnDiskFile;
-	private JTextArea getFilePath;
+	private JTextField getFilePath;
 	private JLabel filename;
 
+	private JLabel currentDepth;
+	private JTextField newDepth;
+
 	//private JLabel 
+
+	public void setAttachedElement(Display d){
+		attachedDisplay=d;
+	}
 
 	public ControlPanel(){
 		super();
 		
+
 		file=new JPanel();
 		directory=new JPanel();
-		recursionControl=new JPanel();
+		recursion=new JPanel();
 
-		currentPath=new JLabel();
-		goTo=new JTextArea(1,20);
+		currentPath=new JTextField("",20);
+		goTo=new JTextField(20);
 		sizeOnDiskDir=new JLabel();
 		nbElem=new JLabel();
 		nbFiles=new JLabel();
 		nbDirectory=new JLabel();
 
-		getFilePath=new JTextArea(1,20);
+		getFilePath=new JTextField("",20);
 		filename=new JLabel();
 		sizeOnDiskFile=new JLabel();
 		
+		currentDepth=new JLabel();
+		newDepth=new JTextField("",5);
 	
 		
 		currentPath.setHorizontalAlignment(JLabel.CENTER);
@@ -52,9 +69,10 @@ public class ControlPanel extends JPanel{
 		nbDirectory.setHorizontalAlignment(JLabel.CENTER);
 		filename.setHorizontalAlignment(JLabel.CENTER);
 		sizeOnDiskFile.setHorizontalAlignment(JLabel.CENTER);
-		
-		GridLayout principal=new GridLayout(0,1);
-		principal.setVgap(50);
+		currentDepth.setHorizontalAlignment(JLabel.CENTER);
+
+		BoxLayout principal=new BoxLayout(this,BoxLayout.Y_AXIS);
+		//principal.setVgap(50);
 
 		setLayout(principal);
 		
@@ -70,52 +88,84 @@ public class ControlPanel extends JPanel{
 		padding2.setMinimumSize(d);
 
 		GridLayout secondary=new GridLayout(0,1);
-		secondary.setVgap(25);
+		secondary.setVgap(17);
 
 		directory.setLayout(secondary);
 		file.setLayout(secondary);
+		recursion.setLayout(secondary);
+
+		//directory.add(padding);
+		directory.add(addTitledBorder(currentPath,"Path du repertoire courant"));
+		directory.add(addTitledBorder(nbElem,"Nombre total d'element"));
+		directory.add(addTitledBorder(nbFiles,"Nombre de fichier "));
+		directory.add(addTitledBorder(nbDirectory,"Nombre de dossier"));
+		directory.add(addTitledBorder(goTo,"Afficher le repertoire de path suivant :"));
 		
-		directory.add(padding);
-		directory.add(addTitledBorder(currentPath,"Path du repertoire courant",false));
-		//directory.add(addTitledBorder(sizeOnDiskDir);
-		directory.add(addTitledBorder(nbElem,"Nombre d'element du repertoire courant",false));
-		directory.add(addTitledBorder(nbFiles,"Nombre de fichier du repertoirecourant",false));
-		directory.add(addTitledBorder(nbDirectory,"Nombre de dossier du repertoire courant",false));
-		directory.add(addTitledBorder(goTo,"Afficher le repertoire de path suivant :",true));
+		file.add(addTitledBorder(filename,"Nom du fichier selectionne"));
+		file.add(addTitledBorder(getFilePath,"Path du fichier selectionner"));
+		file.add(addTitledBorder(sizeOnDiskFile,"Taille du fichier selectionne en octets"));
 		
-		file.add(padding2);
-		file.add(addTitledBorder(filename,"Nom du fichier selectionne",false));
-		file.add(addTitledBorder(getFilePath,"Path du fichier selectionner",false));
-		file.add(addTitledBorder(sizeOnDiskFile,"Taille du fichier selectionne en octets",true));
+		recursion.add(addTitledBorder(currentDepth,"Niveau de recursion actuel"));
+		recursion.add(addTitledBorder(newDepth,"Nouveaux niveau de recusion"));
+		getFilePath.setEditable(false);
+		currentPath.setEditable(false);
 	
 		TitledBorder titleDirPanel=BorderFactory.createTitledBorder("Information sur le repertoire courant");
 		TitledBorder titleFilePanel=BorderFactory.createTitledBorder("Information sur le fichier");
+		TitledBorder titleControlPanel=BorderFactory.createTitledBorder("Information sur le niveau de recursion");
 		
 		directory.setBorder(BorderFactory.createCompoundBorder(new EmptyBorder(10,10,10,10),titleDirPanel));
 		file.setBorder(BorderFactory.createCompoundBorder(new EmptyBorder(10,10,10,10),titleFilePanel));
+		recursion.setBorder(BorderFactory.createCompoundBorder(new EmptyBorder(10,10,10,10),titleControlPanel));
 		
 		add(directory);
 		add(file);
+		add(recursion);
+		
+		goTo.addActionListener(new ActionListener(){
+			public void actionPerformed(ActionEvent e ){
+				try{
+					File test=new File(goTo.getText());
+					if(test.isDirectory()){
+						attachedDisplay.setTreeFile(new FileTree(goTo.getText(),attachedDisplay.getDepthLevel(),1));
+						attachedDisplay.repaint();
+					}
+					else
+						return;
+				}
+				catch(NullPointerException ex){
+					return;
+				}
+			}
+		});
+
+		newDepth.addActionListener(new ActionListener(){
+			public void actionPerformed(ActionEvent e ){
+				try{
+					attachedDisplay.setDepthLevel( Integer.parseInt(newDepth.getText()) );	
+					attachedDisplay.setTreeFile(new FileTree(attachedDisplay.getTree().getRoot().getAbsolutePath(),attachedDisplay.getDepthLevel(),1));
+					attachedDisplay.repaint();
+				}
+				catch(NullPointerException ex){
+					return;
+				}
+			}
+		});
 
 		setBorder(BorderFactory.createLineBorder(Color.black));
 	}
 	
-	public JComponent addTitledBorder(JComponent c,String name,boolean isLast){
+	public JComponent addTitledBorder(JComponent c,String name){
 		JPanel p=new JPanel();
 		Border e=BorderFactory.createEtchedBorder(EtchedBorder.LOWERED);
 		TitledBorder title=BorderFactory.createTitledBorder(e,name);
 		title.setTitleJustification(TitledBorder.CENTER);
-		CompoundBorder com;
 
-		if(isLast){
-			com=BorderFactory.createCompoundBorder(new EmptyBorder(20,20,20,20),title);
-		}
-		else {
-			com=BorderFactory.createCompoundBorder(new EmptyBorder(20,20,0,20),title);
-		}
-
+		
+		p.setLayout(new FlowLayout());
 		p.add(c);
-		p.setBorder(com);
+		p.setBorder(title);
+		p.validate();
 		return p;
 		
 	}
@@ -145,6 +195,11 @@ public class ControlPanel extends JPanel{
 		
 		filename.setText("");
 		filename.setText(fileNameClick);
+	}
+
+	public void updateRecInfo(int currentRec){
+		currentDepth.setText("");
+		currentDepth.setText(String.valueOf(currentRec));
 	}
 
 	public void flushFileInfo(){

@@ -3,7 +3,7 @@ import java.awt.event.*;
 public class ClickableDisplay extends MouseAdapter{
 	
 	protected Display attachedDisplay;
-	private boolean activateToolTip=false;
+
 	public ClickableDisplay(){
 		super();
 	}
@@ -64,7 +64,8 @@ public class ClickableDisplay extends MouseAdapter{
 				}
 				else if(toDetermined.isDirectory() ){
 					attachedDisplay.getEdgeVector().removeAllElements();
-					attachedDisplay.setTreeFile(new FileTree(toDetermined.getAbsolutePath(),2,1) );
+					attachedDisplay.setTreeFile(new
+					FileTree(toDetermined.getAbsolutePath(),attachedDisplay.getDepthLevel(),1) );
 					
 					attachedDisplay.repaint();
 				}
@@ -80,7 +81,7 @@ public class ClickableDisplay extends MouseAdapter{
 				ControlPanel p=attachedDisplay.getControlPanel();
 
 				attachedDisplay.getEdgeVector().removeAllElements();
-				attachedDisplay.setTreeFile(new FileTree(parent,2,1) );
+				attachedDisplay.setTreeFile(new FileTree(parent,attachedDisplay.getDepthLevel(),1) );
 				attachedDisplay.repaint();
 			}
 		} 
@@ -130,9 +131,6 @@ public class ClickableDisplay extends MouseAdapter{
 		return ;
 	}
 	
-	public void setActivateToolTip(boolean b){
-		activateToolTip=b;
-	}
 
 }
 	

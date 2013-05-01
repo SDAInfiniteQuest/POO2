@@ -24,7 +24,7 @@ public class FileTree
 				break;
 			case 1: 
 				root=new FileSquare(path);
-				((FileSquare) root).setDefaultEdgeSize((int) Toolkit.getDefaultToolkit().getScreenSize().getHeight()-70);
+				((FileSquare) root).setDefaultEdgeSize((int) Toolkit.getDefaultToolkit().getScreenSize().getHeight()-100);
 				break;
 			default:
 			{
