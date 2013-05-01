@@ -1,3 +1,7 @@
+/**
+ * Renseigne les informations relatives à un coté et permet leur manipulation
+ * @author J. Pallamidessi & S. Andreux
+ */
 class Edge
 {
 	private int x,y;

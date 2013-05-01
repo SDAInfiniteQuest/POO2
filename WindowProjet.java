@@ -1,21 +1,41 @@
 import javax.swing.*;
 import java.awt.*;
 
-public class WindowProjet extends JFrame{
+/**
+ * Gestion de la fenêtre d'affichage
+ * @author J. Pallamidessi & S. Andreux
+ */
+public class WindowProjet extends JFrame
+{
 	private FileTree f;
 	private Display d;
 	private ClickableDisplay c;
-	public WindowProjet(){
+	
+	/**
+	 * Constructeur: crée une fenêtre simple
+	 */
+	public WindowProjet()
+	{
 		super();	
 	}
 
-	public WindowProjet(FileTree f){
+	/**
+	 * Constructeur: crée une fenêtre pour affiche l'arbre des fichiers
+	 * @param f
+	 *  	Arbre des fichiers à afficher
+	 */
+	public WindowProjet(FileTree f)
+	{
 		super();
 		d=new Display(f);
 		setLayout(new BorderLayout());
 	}
 
-	public void afficher(){
+	/**
+	 * Affiche l'arbre des fichiers
+	 */
+	public void afficher()
+	{
 		JPanel controlPanel=new JPanel();
 		JPanel screen=new JPanel();
 

@@ -1,5 +1,9 @@
 import java.lang.*;
 
+/**
+ * Noeud d'un arbre de fichiers qui permet un affichage en mode graphique
+ * @author J. Pallamidessi & S. Andreux
+ */
 public class FileSquare extends FileNode
 {
 	// /!\ Variables static à la classe mais pouvant être définies ailleurs,

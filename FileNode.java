@@ -2,6 +2,10 @@ import java.lang.*;
 import java.io.File;
 import java.io.IOException;
 
+/**
+ * Noeud d'un arbre de fichiers, contient des données pour un affichage éventuel et permet un affichage sur la console
+ * @author J. Pallamidessi & S. Andreux
+ */
 public class FileNode extends File
 {
 	int nbDir=0;
@@ -10,27 +14,34 @@ public class FileNode extends File
 	protected int x,y;
 	protected int edgeSize;
 
+	/**
+	 * Crée un noeud dans l'arbre des fichiers
+	 * @param dad 
+	 * 		Référence le noeud parent
+	 * @param son 
+	 *  	Nom du fichier attaché au noeud
+	 */
 	public FileNode(FileNode dad, String son)
 	{
 		super(dad.getAbsolutePath(),son);
 		daddy=dad;
 	}
 
+	/**
+	 * Crée un noeud dans l'arbre des fichiers, le noeud créé correspond à la tête de l'arbre.
+	 * @param son 
+	 *  	Nom du fichier attaché au noeud
+	 */
 	public FileNode(String n)
 	{
 		super(n);			
 	}
-	
-	/*
-	 * refus du constructeur vide WTF ?
-	public FileNode()
-	{
-	}
-  */
 
-	/*marche parfaitement : par contre pas trop rapide prof de 3 sur 
-	 * / environ 10s*/
-
+	/**
+	 * Crée l'arbre
+	 * @param depth
+	 * 		Donne la profondeur souhaitée pour l'arbre
+	 */	
 	public void buildTree(int depth)
 	{
 		int i,j,k=0,sizeTab;
@@ -71,43 +82,85 @@ public class FileNode extends File
 		return ;
 	}
 
-	public FileNode getSon(int index){
+	/**
+	 * Renvoit un lien vers le noeud d'un fils du répertoire courant
+	 * @param index 
+	 *  	Numéro du fils qui doit être renvoyé
+	 * @return 
+	 * 		FileNode associé au fils
+	 */
+	public FileNode getSon(int index)
+	{
 		return files[index];
 	}
 
-	public boolean isEmpty(){
+	/**
+	 * Indique si un répertoire est vide
+	 * @return 
+	 * 		booléen indiquant si le répertoire est vide
+	 */
+	public boolean isEmpty()
+	{
 		return (files==null);
 	}
 
-	public boolean isReallyEmpty(){
+	/**
+	 * Indique si un répertoire est vide au sens où la méthode list() ne revoit rien
+	 * @return 
+	 * 		booléen indiquant si la liste renvoyée par list est null
+	 */
+	public boolean isReallyEmpty()
+	{
 		return (list()==null);
 	}
 
+	/**
+	 * Indique le nombre de fichiers (répertoires et sous-répertoires) contenus dans un répertoire
+	 * @return 
+	 * 		entier donnant le nombre de fichiers et sous-répertoires contenus dans le répertoire
+	 */
 	public int nbFiles()
 	{
 		return files.length;
 	}
-	
-	public int getNbFile(){
+
+	/**
+	 * Indique le nombre de fichiers contenus dans un répertoire
+	 * @return 
+	 * 		entier donnant le nombre de fichiers contenus dans le répertoire
+	 */
+	public int getNbFile()
+	{
 		int result=0,i;
 
-		for(i=0;i<files.length;i++){
+		for(i=0;i<files.length;i++)
+		{
 			if(files[i].isFile())
 				result++;
 		}
 		return result;
 	}
 
-	public int getNbDirectory(){
+	/**
+	 * Indique le nombre de sous-répertoires contenus dans un répertoire
+	 * @return 
+	 * 		entier donnant le nombre de sous-répertoires contenus dans le répertoire
+	 */
+	public int getNbDirectory()
+	{
 		int result=0,i;
 
-		for(i=0;i<files.length;i++){
+		for(i=0;i<files.length;i++)
+		{
 			if(files[i].isDirectory())
 				result++;
 		}
 		return result;
 	}
 
+	/**
+	 * Affiche les chemins des différents fichiers inclus dans le répertoire
+	 */
 	public void succ()
 	{
 		if(files!=null)
@@ -120,7 +173,9 @@ public class FileNode extends File
 		}
 	}
 
-	/* Affichage pas top,mais marche parfaitement*/
+	/**
+	 * Affiche ou en tout cas essaie d'affiche l'arbre des chemins des fichiers sur la console
+	 */
 	public void print()
 	{
 		int size,i,j;
@@ -129,8 +184,8 @@ public class FileNode extends File
 		if(!exists()) 
 			return ;
 		
-
-		if(isFile()){ 
+		if(isFile())
+		{ 
 			System.out.println(getName());
 			System.out.println("x "+x+"y "+y);
 		}
@@ -162,19 +217,43 @@ public class FileNode extends File
 		}
 	}
 	
-	public int getX(){
+	/**
+	 * Accesseur: retourne la valeur de x pour l'affichage graphique
+	 * @return 
+	 *		entier valeur de x
+	 */
+	public int getX()
+	{
 		return x;
 	}
 
-	public int getY(){
+	/**
+	 * Accesseur: retourne la valeur de y pour l'affichage graphique
+	 * @return 
+	 *		entier valeur de y
+	 */
+	public int getY()
+	{
 		return y;
 	}
 
-	public int getEdgeSize(){
+	/**
+	 * Accesseur: retourne la taille du coté pour l'affichage
+	 * @return 
+	 *		entier valeur du coté
+	 */
+	public int getEdgeSize()
+	{
 		return edgeSize;
 	}
 	
-	public FileNode[] getFiles(){
+	/**
+	 * Accesseur: récupère la liste des fils
+	 * @return 
+	 *		tableau des noeuds suivants
+	 */
+	public FileNode[] getFiles()
+	{
 		return files;
 	}
 }
