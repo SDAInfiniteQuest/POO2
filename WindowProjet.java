@@ -32,7 +32,7 @@ public class WindowProjet extends JFrame
 	}
 
 	/**
-	 * Affiche l'arbre des fichiers
+	 * Affiche l'arbre des fichiers dans la fenêtre
 	 */
 	public void afficher()
 	{

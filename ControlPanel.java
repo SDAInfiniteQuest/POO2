@@ -13,6 +13,10 @@ import java.awt.Dimension;
 import java.awt.event.*;
 import java.io.File;
 
+/**
+ * Panneau de controle
+ * @author J. Pallamidessi & S. Andreux
+ */
 public class ControlPanel extends JPanel{
 	private Display attachedDisplay;
 
@@ -35,14 +39,13 @@ public class ControlPanel extends JPanel{
 
 	//private JLabel 
 
-	public void setAttachedElement(Display d){
-		attachedDisplay=d;
-	}
-
-	public ControlPanel(){
+	/**
+	 * Gros constructeur du panneau d'affichage des données générales sur la l'arbre et la navigation dans celui-ci
+	 */
+	public ControlPanel()
+	{
 		super();
-		
-
+	
 		file=new JPanel();
 		directory=new JPanel();
 		recursion=new JPanel();
@@ -61,7 +64,6 @@ public class ControlPanel extends JPanel{
 		currentDepth=new JLabel();
 		newDepth=new JTextField("",5);
 	
-		
 		currentPath.setHorizontalAlignment(JLabel.CENTER);
 		sizeOnDiskDir.setHorizontalAlignment(JLabel.CENTER);
 		nbElem.setHorizontalAlignment(JLabel.CENTER);
@@ -139,7 +141,7 @@ public class ControlPanel extends JPanel{
 			}
 		});
 
-		newDepth.addActionListener(new ActionListener(){
+		newDepth.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e ){
 				try{
 
@@ -165,7 +167,17 @@ public class ControlPanel extends JPanel{
 		setBorder(BorderFactory.createLineBorder(Color.black));
 	}
 	
-	public JComponent addTitledBorder(JComponent c,String name){
+	/**
+	 * Fixe le titre et les options du panneau de controle
+	 * @param c
+	 *		composant du panneau
+	 * @param name 
+	 *		titre du panneau
+	 * @return
+	 * 		panneau d'affichage
+	 */
+	public JComponent addTitledBorder(JComponent c,String name)
+	{
 		JPanel p=new JPanel();
 		Border e=BorderFactory.createEtchedBorder(EtchedBorder.LOWERED);
 		TitledBorder title=BorderFactory.createTitledBorder(e,name);
@@ -177,9 +189,21 @@ public class ControlPanel extends JPanel{
 		p.setBorder(title);
 		p.validate();
 		return p;
-		
 	}
-	public void updateDirInfo(String currentDirPath,int sizeCurDir,int nbNewFile,int nbNewDirectory){
+	
+	/**
+	 * Met-à-jour les informations concernant répertoire courant en vu de leur affichage
+	 * @param currentDirPath
+	 *		Chemin vers le répertoire courant
+	 * @param sizeCurDir
+	 *		Taille du répertoire courant
+	 * @param nbNewFile
+	 *		Actuel répertoire courant
+	 * @param nbNewDirectory
+	 * 		Nouveau répertoire courant
+	 */
+	public void updateDirInfo(String currentDirPath,int sizeCurDir,int nbNewFile,int nbNewDirectory)
+	{
 		currentPath.setText("");
 		currentPath.setText(currentDirPath);
 		
@@ -196,7 +220,17 @@ public class ControlPanel extends JPanel{
 		nbElem.setText(String.valueOf(nbNewFile+nbNewDirectory));
 	}
 
-	public void updateFileInfo(String fileNameClick,int size,String pathFile) {
+	/**
+	 * Met-à-jour les informations relative à un fichier en vu de leur affichage
+	 * @param fileNameClick
+	 * 		nom du fichier cliqué		
+	 * @param size
+	 *		taille du fichier
+	 * @param pathFile
+	 *		chemin du fichier
+	 */
+	public void updateFileInfo(String fileNameClick,int size,String pathFile) 
+	{
 		sizeOnDiskFile.setText("");
 		sizeOnDiskFile.setText(String.valueOf(size));
 		
@@ -207,16 +241,34 @@ public class ControlPanel extends JPanel{
 		filename.setText(fileNameClick);
 	}
 
-	public void updateRecInfo(int currentRec){
+	/**
+	 * 
+	 * @param currentRec
+	 *
+	 */
+	public void updateRecInfo(int currentRec)
+	{
 		currentDepth.setText("");
 		currentDepth.setText(String.valueOf(currentRec));
 	}
 
-	public void flushFileInfo(){
+	/**
+	 * Enlève les infos affichées concernant un fichier
+	 */
+	public void flushFileInfo()
+	{
 		sizeOnDiskFile.setText("");
 		getFilePath.setText("");
 		filename.setText("");
 	}
 
-
+	/**
+	 * Mutateur: attache une fenêtre au panneau
+	 * @param d
+	 * 		affichage à attacher au panneau
+	 */
+	public void setAttachedElement(Display d)
+	{
+		attachedDisplay=d;
+	}
 }
